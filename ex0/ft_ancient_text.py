@@ -19,7 +19,7 @@ def print_file_content(file: IO[str]) -> None:
     print("---")
 
 
-def recover(file_name: str):
+def recover(file_name: str) -> None:
     file: IO[str] | None = try_get_file(file_name)
     if file:
         print(f"Accessing file '{file_name}'")
