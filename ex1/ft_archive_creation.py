@@ -1,6 +1,8 @@
 from typing import IO
 from sys import argv
 
+# TODO: used function verification
+
 
 def try_get_file(file_name: str, mode: str = "r") -> IO[str] | None:
     file: IO[str] | None = None
