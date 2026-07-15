@@ -35,7 +35,7 @@ def print_file_content(file: IO[str]) -> bool:
 
 def recover(file_name: str) -> None:
     file: IO[str] | None = try_get_file(file_name)
-    if file:
+    if file is not None:
         print(f"[Log] - Accessing file '{file_name}'\n")
         if not print_file_content(file):
             print(f"[Error] - failed to read file '{file_name}'")
