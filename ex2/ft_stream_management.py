@@ -4,65 +4,86 @@ from sys import argv, stderr, stdin, stdout
 
 def try_get_file(file_name: str, mode: str = "r") -> IO[str] | None:
     file: IO[str] | None = None
+    stdout.flush()
     try:
-        file = open(file_name, mode)
+        file = open(file_name, mode=mode)
+    except FileNotFoundError:
+        print(f"[Error] - file not found '{file_name}'", file=stderr)
+    except PermissionError:
+        print(f"[Error] - unreadable file '{file_name}'", file=stderr)
+    except IsADirectoryError:
+        print(f"[Error] - is a directory '{file_name}'", file=stderr)
     except Exception as error:
-        print(f"[STDERR] Error opening file '{file_name}':",
-              error, file=stderr)
+        print(f"[Error] - failed to open file '{file_name}':", error,
+              file=stderr)
+    stderr.flush()
     return file
 
 
-def print_file_content(file: IO[str], suffix: str = "") -> None:
-    print("---\n")
-    for line in file:
-        print(line[:-1] + suffix)
-    print("\n---")
+def print_content(content: str, suffix: str = "") -> str:
+    new_content: str = content
+    if suffix != "":
+        new_content = content.replace("\n", suffix + "\n")
+    print("=== BEGIN")
+    print(new_content)
+    print("=== END")
+    return new_content
 
 
-def copy_file(src_name: str, dst_name: str) -> None:
-    new_content: str = ""
-    dst: IO[str] | None = None
-    src: IO[str] | None = try_get_file(src_name)
-    if src:
-        for line in src:
-            new_content += line[:-1] + "#" + "\n"
-        src.close()
-        dst = try_get_file(dst_name, "w")
-        if dst:
-            dst.write(new_content)
-            dst.close()
-
-
-def recovery(file_name: str) -> None:
+def recovery(file_name: str) -> str | None:
     file: IO[str] | None = try_get_file(file_name)
+    content: str | None = None
     if file:
-        print(f"Accessing file '{file_name}'")
-        print_file_content(file)
+        print(f"[LOG] - Reading file '{file_name}'")
+        content = print_content(file.read())
+        print(f"\n[LOG] - Closing file '{file_name}'")
         file.close()
-        print(f"File '{file_name}' closed.")
+        print(f"[LOG] - File '{file_name}' closed")
+    else:
+        print("[LOG] - Aborted")
+    return content
 
 
-def preserv(file_name: str) -> None:
-    file: IO[str] | None = try_get_file(file_name)
-    new_file_name: str = ""
-    if file:
-        print("\nTransform data:")
-        print_file_content(file, "#")
-        print("Enter new file name (or empty): ", end="")
+def preserv(content: str) -> None:
+    new_file_name: str | None
+    new_file: IO[str] | None
+    new_content: str
+    print("\n[LOG] - Transforming data")
+    new_content = print_content(content, "#")
+    try:
+        print("\nEnter new file name (or empty): ", end="")
         stdout.flush()
-        new_file_name = stdin.readline()
-        if new_file_name != "":
-            copy_file(file_name, new_file_name)
+        new_file_name = stdin.readline().removesuffix("\n")
+        stdin.flush()
+    except BaseException:
+        new_file_name = None
+    if new_file_name:
+        print(f"\n[LOG] - Saving data to '{new_file_name}'")
+        new_file = try_get_file(new_file_name, "w")
+        if new_file:
+            new_file.write(new_content)
+            print(f"[LOG] - Data saved in file '{new_file_name}'")
+            print(f"\n[LOG] - Closing file '{new_file_name}'")
+            new_file.close()
+            print(f"[LOG] - File '{new_file_name}' closed")
         else:
-            print("Not saving data.")
-        file.close()
+            print("[LOG] - Aborted")
+    else:
+        print("\n[LOG] - Not saving data")
+
+
+def main() -> None:
+    content: str | None
+    file_name: str
+    print("=== Cyber Archives Recovery & Preservation ===\n")
+    if len(argv) == 2:
+        file_name = argv[1]
+        content = recovery(file_name)
+        if content:
+            preserv(content)
+    else:
+        print("Usage: python ft_stream_management.py <file>")
 
 
 if __name__ == "__main__":
-    print("=== Cyber Archives Recovery & Preservation ===")
-    if len(argv) == 2:
-        file_name: str = argv[1]
-        recovery(file_name)
-        preserv(file_name)
-    else:
-        print("Usage: ft_stream_management.py <file>")
+    main()
