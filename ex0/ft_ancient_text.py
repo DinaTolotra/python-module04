@@ -9,7 +9,7 @@ def try_get_file(file_name: str) -> IO[str] | None:
     except FileNotFoundError:
         print(f"[Error] - file not found '{file_name}'")
     except PermissionError:
-        print(f"[Error] - unreadable file '{file_name}'")
+        print(f"[Error] - permission denied '{file_name}'")
     except IsADirectoryError:
         print(f"[Error] - is a directory '{file_name}'")
     except Exception as error:
@@ -17,11 +17,17 @@ def try_get_file(file_name: str) -> IO[str] | None:
     return file
 
 
-def print_file_content(file: IO[str]) -> None:
-    content: str = file.read()
-    print("=== BEGIN")
-    print(content)
-    print("=== END")
+def print_file_content(file: IO[str]) -> bool:
+    content: str = ""
+    try:
+        content = file.read()
+        print("=== BEGIN ===")
+        print(content)
+        print("==== END ====")
+        return True
+    except UnicodeDecodeError:
+        print("[Error] - invalid file encoding")
+        return False
 
 
 def recover(file_name: str) -> None:
