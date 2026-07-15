@@ -40,16 +40,16 @@ def recovery(file_name: str) -> str | None:
 
 
 def preserv(content: str) -> None:
-    new_file_name: str = ""
+    new_file_name: str | None
     new_file: IO[str] | None
+    new_content: str
     print("\n[LOG] - Transforming data")
-    new_content: str = print_content(content, "#")
-    print("\nEnter new file name (or empty): ", end="")
+    new_content = print_content(content, "#")
     try:
-        new_file_name = input()
+        new_file_name = input("\nEnter new file name (or empty): ")
     except BaseException:
-        pass
-    if new_file_name != "":
+        new_file_name = None
+    if new_file_name:
         print(f"\n[LOG] - Saving data to '{new_file_name}'")
         new_file = try_get_file(new_file_name, "w")
         if new_file:
@@ -64,9 +64,10 @@ def preserv(content: str) -> None:
 
 if __name__ == "__main__":
     content: str | None
+    file_name: str
     print("=== Cyber Archives Recovery & Preservation ===\n")
     if len(argv) == 2:
-        file_name: str = argv[1]
+        file_name = argv[1]
         content = recovery(file_name)
         if content:
             preserv(content)
