@@ -36,6 +36,9 @@ def recovery(file_name: str) -> str | None:
         print(f"\n[LOG] - Closing file '{file_name}'")
         file.close()
         print(f"[LOG] - File '{file_name}' closed")
+    else:
+        print("[LOG] - Aborted")
+
     return content
 
 
@@ -58,6 +61,8 @@ def preserv(content: str) -> None:
             print(f"\n[LOG] - Closing file '{new_file_name}'")
             new_file.close()
             print(f"[LOG] - File '{new_file_name}' closed")
+        else:
+            print("[LOG] - Aborted")
     else:
         print("\n[LOG] - Not saving data")
 
