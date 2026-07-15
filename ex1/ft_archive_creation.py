@@ -62,7 +62,7 @@ def preserv(content: str) -> None:
         print("\n[LOG] - Not saving data")
 
 
-if __name__ == "__main__":
+def main():
     content: str | None
     file_name: str
     print("=== Cyber Archives Recovery & Preservation ===\n")
@@ -73,3 +73,7 @@ if __name__ == "__main__":
             preserv(content)
     else:
         print("Usage: python ft_archive_creation.py <file>")
+
+
+if __name__ == "__main__":
+    main()
