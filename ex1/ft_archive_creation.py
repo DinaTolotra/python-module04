@@ -67,7 +67,7 @@ def preserv(content: str) -> None:
         print("\n[LOG] - Not saving data")
 
 
-def main():
+def main() -> None:
     content: str | None
     file_name: str
     print("=== Cyber Archives Recovery & Preservation ===\n")
