@@ -7,13 +7,13 @@ def try_get_file(file_name: str, mode: str = "r") -> IO[str] | None:
     try:
         file = open(file_name, mode=mode, encoding="utf-8")
     except FileNotFoundError:
-        print(f"[Error] - file not found '{file_name}'", file=stderr)
+        print(f"[Error] - File not found '{file_name}'", file=stderr)
     except PermissionError:
-        print(f"[Error] - permission denied '{file_name}'", file=stderr)
+        print(f"[Error] - Permission denied '{file_name}'", file=stderr)
     except IsADirectoryError:
-        print(f"[Error] - is a directory '{file_name}'", file=stderr)
+        print(f"[Error] - Is a directory '{file_name}'", file=stderr)
     except Exception as error:
-        print(f"[Error] - failed to open file '{file_name}':", error,
+        print(f"[Error] - Failed to open file '{file_name}':", error,
               file=stderr)
     return file
 
@@ -35,9 +35,9 @@ def get_use_input(prompt: str) -> str | None:
         stdout.flush()
         value = stdin.readline().rstrip("\n")
     except (KeyboardInterrupt, EOFError):
-        pass
+        print("\n[Log] - Input interupted")
     except Exception as e:
-        print(f"[Error] - failed to get user input: {e}",
+        print(f"[Error] - Failed to get user input: {e}",
               file=stderr)
     return value
 
@@ -47,7 +47,7 @@ def write_to_file(file_name: str, file: IO[str], content: str) -> None:
         file.write(content)
         print(f"[Log] - Data saved in file '{file_name}'")
     except Exception as error:
-        print(f"[Error] - failed to write to file '{file_name}':",
+        print(f"[Error] - Failed to write to file '{file_name}':",
               error, file=stderr)
     finally:
         print(f"\n[Log] - Closing file '{file_name}'")
@@ -62,7 +62,7 @@ def read_file(file_name: str, file: IO[str]) -> str | None:
         content = file.read()
         print_content(content)
     except Exception as error:
-        print(f"[Error] - failed to read file '{file_name}':",
+        print(f"[Error] - Failed to read file '{file_name}':",
               error, file=stderr)
     finally:
         print(f"\n[Log] - Closing file '{file_name}'")
