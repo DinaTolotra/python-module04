@@ -10,10 +10,10 @@ def secure_archive(
                 "Valid options are: 'r' or 'w'"
             )
         with open(file_name, mode) as file:
-            if content is not None and mode == "r":
+            if content is not None and mode == "w":
                 file.write(content)
                 content = "Content successfully written to file"
-            elif mode == "w":
+            elif mode == "r":
                 content = file.read()
     except Exception as error:
         content = str(error)
