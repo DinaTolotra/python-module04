@@ -9,7 +9,7 @@ def secure_archive(
                 f"Invalid mode '{mode}'.\n" +
                 "Valid options are: 'r' or 'w'"
             )
-        with open(file_name, mode) as file:
+        with open(file_name, mode, encoding="utf-8") as file:
             if content is not None and mode == "w":
                 file.write(content)
                 content = "Content successfully written to file"
